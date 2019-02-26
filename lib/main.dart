@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: ListTile(
           title: Text(subscription.name),
-          trailing: Text(subscription.value),
+          trailing: Text(subscription.value.toString()),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Subscription {
   final String name;
-  final String value;
+  final double value;
   final String currency;
   final DocumentReference reference;
 

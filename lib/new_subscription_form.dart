@@ -68,7 +68,7 @@ class _AddSubscriptionFormPageState extends State<AddSubscriptionFormPage> {
                         var _result = await subscriptions.add(
                             {
                               'name': nameController.text,
-                              'amount': amountController.text,
+                              'amount': double.parse(amountController.text),
                               'currency': currencyController.text
                             });
                         Navigator.pop(context);
