@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'subscription_model.dart';
 import 'subscription_card.dart';
 import 'new_subscription_form.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Money controller'),
+      home: MyHomePage(title: 'My subscriptions'),
     );
   }
 }
@@ -48,9 +49,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  List<Subscription> initialSubscriptions = []
-  ..add(Subscription("Storytel", 29.9, "PLN"));
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -71,11 +69,45 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: Container(
-        child: SubscriptionCard(initialSubscriptions[0]),
+      body: _buildBody(context),
+    );
+  }
+  Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('subscriptions').snapshots(),
+      builder: (context, snapshot) {
+        if(!snapshot.hasData) return LinearProgressIndicator();
+        return _buildList(context, snapshot.data.documents);
+      },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final subscription = Subscription.fromSnapshot(data);
+
+    return Padding(
+      key: ValueKey(subscription.name),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: ListTile(
+          title: Text(subscription.name),
+          trailing: Text(subscription.value),
+        ),
       ),
     );
   }
+
   Future _showNewSubscriptionForm() async {
     Subscription newSubscription = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -84,8 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
-    if (newSubscription != null) {
-      initialSubscriptions.add(newSubscription);
-    }
+//    if (newSubscription != null) {
+//      initialSubscriptions.add(newSubscription);
+//    }
   }
 }

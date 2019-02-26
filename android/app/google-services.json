@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "746150614709",
+    "firebase_url": "https://flutter-pieniadze.firebaseio.com",
+    "project_id": "flutter-pieniadze",
+    "storage_bucket": "flutter-pieniadze.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746150614709:android:3b1b4eae33f5082b",
+        "android_client_info": {
+          "package_name": "com.zatorska.joanna.mojepinionzki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746150614709-iebeo2llkugq20b8cmkdvjga7dij3bdu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG0SUvkKM4X0B2uyqrrCL0Os-v0uYoH1o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

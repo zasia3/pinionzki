@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'subscription_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddSubscriptionFormPage extends StatefulWidget {
 
@@ -62,9 +63,16 @@ class _AddSubscriptionFormPageState extends State<AddSubscriptionFormPage> {
                   builder: (context) {
                     // The basic Material Design action button.
                     return RaisedButton(
-                      // If onPressed is null, the button is disabled
-                      // this is my goto temporary callback.
-                      onPressed: () => print('PRESSED'),
+                      onPressed: () => Firestore.instance.runTransaction((transaction) async {
+                        CollectionReference subscriptions = Firestore.instance.collection('subscriptions');
+                        var _result = await subscriptions.add(
+                            {
+                              'name': nameController.text,
+                              'amount': amountController.text,
+                              'currency': currencyController.text
+                            });
+                        Navigator.pop(context);
+                    }),
                       color: Colors.indigoAccent,
                       child: Text('Submit subscription'),
                     );
