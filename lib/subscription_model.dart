@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Subscription {
-  final String name;
-  final double value;
-  final String currency;
-  final DocumentReference reference;
+  String name;
+  double value;
+  String currency;
+  DocumentReference reference;
 
   Subscription(this.name, this.value, this.currency, this.reference);
 
@@ -15,7 +15,6 @@ class Subscription {
         name = map['name'],
         value = map['amount'],
         currency = map['currency'];
-
 
   Subscription.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, reference: snapshot.reference);
