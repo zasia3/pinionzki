@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'subscription_model.dart';
 import 'subscription_card.dart';
 import 'new_subscription_form.dart';
+import 'edit_subscription_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() => runApp(MyApp());
@@ -48,7 +49,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  double total = 0.0;
+  Stream<QuerySnapshot> documentsStream;
 
+  @override
+  initState() {
+    super.initState();
+    queryValues();
+  }
+
+  void queryValues() async {
+    documentsStream = Firestore.instance
+        .collection('subscriptions')
+        .snapshots();
+    await documentsStream.listen((snapshot) {
+      double tempTotal = snapshot.documents.fold(0, (tot, doc) => tot + doc.data['amount']);
+      setState(() {total = tempTotal;});
+      debugPrint(total.toString());
+    });
+  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -66,15 +85,28 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: _showNewSubscriptionForm,
-          )
+          ),
+          IconButton(
+            icon: Icon(Icons.settings)
+          ),
         ],
       ),
-      body: _buildBody(context),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child:_buildBody(context),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 28),
+            child: Text('Total: $total'),
+          ),
+        ],
+      ),
     );
   }
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('subscriptions').snapshots(),
+      stream: documentsStream,
       builder: (context, snapshot) {
         if(!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.documents);
@@ -102,7 +134,14 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: ListTile(
           title: Text(subscription.name),
-          trailing: Text(subscription.value.toString()),
+          trailing: Text(subscription.value.toString() + subscription.currency),
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(
+                    builder: (context) => EditSubscriptionFormPage(subscription: subscription)
+                )
+            );
+          },
         ),
       ),
     );
@@ -116,8 +155,5 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
-//    if (newSubscription != null) {
-//      initialSubscriptions.add(newSubscription);
-//    }
   }
 }

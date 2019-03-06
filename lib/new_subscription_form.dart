@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'subscription_model.dart';
+import 'currency_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddSubscriptionFormPage extends StatefulWidget {
@@ -27,6 +28,9 @@ class _AddSubscriptionFormPageState extends State<AddSubscriptionFormPage> {
             ),
           child: Column(
             children: [
+              Flexible(
+                child:CurrencyPicker(),
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: TextField(
@@ -69,7 +73,7 @@ class _AddSubscriptionFormPageState extends State<AddSubscriptionFormPage> {
                             {
                               'name': nameController.text,
                               'amount': double.parse(amountController.text),
-                              'currency': currencyController.text
+                              'currency': 'PLN'
                             });
                         Navigator.pop(context);
                     }),
@@ -79,6 +83,7 @@ class _AddSubscriptionFormPageState extends State<AddSubscriptionFormPage> {
                   },
                 ),
               ),
+
             ]
           )
         ),
