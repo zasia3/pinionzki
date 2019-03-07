@@ -1,8 +1,10 @@
 import 'currency_model.dart';
 import 'package:flutter/material.dart';
 
+typedef void CurrencyArgument(Currency x);
+
 class CurrencyPicker extends StatefulWidget {
-  final Function() notifyParent;
+  final CurrencyArgument notifyParent;
 
   CurrencyPicker({Key key, @required this.notifyParent}) : super(key: key);
   @override
@@ -22,20 +24,18 @@ class _CurrencyPickerState extends State<CurrencyPicker> {
             labelText: "Currency"
           ),
             isEmpty: _currency == null,
+
             child: DropdownButtonHideUnderline(
                 child: DropdownButton<Currency>(
                   value: _currency,
                   isDense: true,
                   onChanged: (Currency newValue) {
-                    widget.notifyParent();
+                    setState(() {
+                      _currency = newValue;
+                      state.didChange(newValue);
+                    });
+                    widget.notifyParent(newValue);
                   },
-
-//                  onChanged: (Currency newValue) {
-//                    setState(() {
-//                      _currency = newValue;
-//                      state.didChange(newValue);
-//                    });
-//                  },
                   items: currencies.map((Currency currency) {
                     return new DropdownMenuItem(
                       value: currency,
@@ -46,15 +46,10 @@ class _CurrencyPickerState extends State<CurrencyPicker> {
             )
         );
 
-      }
+      },
+      validator: (val) {
+        return val != null ? null : 'Please select a color';
+      },
     );
-//    return ListWheelScrollView.useDelegate(
-//        itemExtent: 10,
-//        childDelegate: ListWheelChildLoopingListDelegate(
-//            children: List<Widget>.generate(
-//                currencies.length, (index) => Text(currencies[index].name),
-//            )
-//        ),
-//    );
   }
 }
