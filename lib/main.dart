@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'subscription_model.dart';
-import 'subscription_card.dart';
 import 'subscription_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'settings_form.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  SharedPreferences.setMockInitialValues({});
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -86,7 +90,14 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: _showNewSubscriptionForm,
           ),
           IconButton(
-            icon: Icon(Icons.settings)
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(
+                      builder: (context) => SettingsForm(),
+                  )
+              );
+            },
           ),
         ],
       ),
@@ -144,6 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  Future _showSettingsForm() async {
+
   }
 
   Future _showNewSubscriptionForm() async {

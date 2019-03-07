@@ -17,8 +17,10 @@ class _CurrencyPickerState extends State<CurrencyPicker> {
 
   @override
   void initState() {
+    print("rebuilding");
     if (widget.currentCurrency != null) {
       _currency = widget.currentCurrency;
+      print("setting state with currency: $_currency");
     }
     return super.initState();
   }

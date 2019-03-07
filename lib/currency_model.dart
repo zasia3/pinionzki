@@ -8,7 +8,7 @@ class Currency {
 }
 
 final List<Currency> currencies = [
-  Currency('zloty', 'PLN', 'PLN'),
+  Currency('Zloty', 'PLN', 'PLN'),
   Currency('Pound Sterling', 'GDP', '£'),
   Currency('Dollar', 'USD', "\$")
 ];
