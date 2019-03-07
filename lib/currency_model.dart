@@ -12,3 +12,7 @@ final List<Currency> currencies = [
   Currency('Pound Sterling', 'GDP', '£'),
   Currency('Dollar', 'USD', "\$")
 ];
+
+Currency currencyFromAbbreviation(String abbreviation) {
+  return currencies.firstWhere((currency) => currency.abbreviation == abbreviation);
+}

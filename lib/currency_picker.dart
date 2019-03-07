@@ -5,15 +5,24 @@ typedef void CurrencyArgument(Currency x);
 
 class CurrencyPicker extends StatefulWidget {
   final CurrencyArgument notifyParent;
+  final Currency currentCurrency;
 
-  CurrencyPicker({Key key, @required this.notifyParent}) : super(key: key);
+  CurrencyPicker({Key key, @required this.notifyParent, this.currentCurrency}) : super(key: key);
   @override
   _CurrencyPickerState createState() => _CurrencyPickerState();
 }
 
 class _CurrencyPickerState extends State<CurrencyPicker> {
   Currency _currency;
- 
+
+  @override
+  void initState() {
+    if (widget.currentCurrency != null) {
+      _currency = widget.currentCurrency;
+    }
+    return super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FormField<Currency>(

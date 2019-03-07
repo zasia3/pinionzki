@@ -30,6 +30,9 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
     if (widget.subscription != null) {
       nameController.text = widget.subscription.name;
       amountController.text = widget.subscription.value.toString();
+      if (widget.subscription.currency != null) {
+        _currency = currencyFromAbbreviation(widget.subscription.currency);
+      }
     }
     return super.initState();
   }
@@ -79,6 +82,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                         _currency = currency;
                       })
                     },
+                currentCurrency: _currency,
               ),
               new Container(
                 padding: const EdgeInsets.only(left: 40.0, top: 20.0),
