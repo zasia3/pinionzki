@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'subscription_model.dart';
 import 'subscription_card.dart';
-import 'new_subscription_form.dart';
+import 'subscription_form.dart';
 import 'edit_subscription_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () {
             Navigator.push(context,
                 MaterialPageRoute(
-                    builder: (context) => EditSubscriptionFormPage(subscription: subscription)
+                    builder: (context) => SubscriptionForm(subscription: subscription)
                 )
             );
           },
@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Subscription newSubscription = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return AddSubscriptionFormPage();
+          return SubscriptionForm();
         },
       ),
     );
