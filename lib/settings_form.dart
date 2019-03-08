@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'currency_picker.dart';
 import 'currency_model.dart';
 import 'shared_preferences_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsForm extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class SettingsForm extends StatefulWidget {
 }
 
 class _SettingsFormState extends State<SettingsForm> {
+
   Currency _currency;
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
@@ -17,16 +19,7 @@ class _SettingsFormState extends State<SettingsForm> {
   @override
   void initState() {
     super.initState();
-    getSharedPrefs();
-  }
-
-  Future<Null> getSharedPrefs() async {
-    String abbreviation = await SharedPreferencesHelper.getAppCurrency();
-    print("read abbreviation: $abbreviation");
-    setState(() {
-      _currency = currencyFromAbbreviation(abbreviation);
-      print("created currency: $_currency");
-    });
+    _loadCurrency();
   }
 
   @override
@@ -46,14 +39,10 @@ class _SettingsFormState extends State<SettingsForm> {
             ),
             children: <Widget>[
               CurrencyPicker(
-                notifyParent: (Currency currency) => {
-                  setState(() {
-                        _currency = currency;
-                      })
-                },
-                currentCurrency: _currency,
+                notifyParent: _saveCurrency,
+                currentCurrencyAbbreviation: _currency.abbreviation,
               ),
-              new Container(
+              Container(
                 padding: const EdgeInsets.only(left: 40.0, top: 20.0),
                 child: new RaisedButton(
                   child: const Text('Submit'),
@@ -70,20 +59,23 @@ class _SettingsFormState extends State<SettingsForm> {
     );
   }
 
-  Widget _buildCurrencyPicker(String currencyAbbreviation) {
-    Currency _savedCurrency;
-    if (currencyAbbreviation != null) {
-      _savedCurrency = currencyFromAbbreviation(currencyAbbreviation);
-    } else {
-      _savedCurrency = currencies.first;
-    }
-    return CurrencyPicker(
-      notifyParent: (Currency currency) => {
-            setState(() {
-              _currency = currency;
-            })
-          },
-      currentCurrency: _savedCurrency,
-    );
+  _loadCurrency() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String currencyAbbreviation = prefs.getString(kAppCurrency);
+    setState(() {
+      if (currencyAbbreviation != null) {
+        _currency = currencyFromAbbreviation(currencyAbbreviation);
+      } else {
+        _currency = currencies.first;
+      }
+    });
+  }
+
+  _saveCurrency(Currency currency) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _currency = currency;
+      prefs.setString('_kAppCurrency', _currency.abbreviation);
+    });
   }
 }

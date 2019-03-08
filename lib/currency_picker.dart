@@ -5,9 +5,9 @@ typedef void CurrencyArgument(Currency x);
 
 class CurrencyPicker extends StatefulWidget {
   final CurrencyArgument notifyParent;
-  final Currency currentCurrency;
+  final String currentCurrencyAbbreviation;
 
-  CurrencyPicker({Key key, @required this.notifyParent, this.currentCurrency}) : super(key: key);
+  CurrencyPicker({Key key, @required this.notifyParent, this.currentCurrencyAbbreviation}) : super(key: key);
   @override
   _CurrencyPickerState createState() => _CurrencyPickerState();
 }
@@ -18,8 +18,8 @@ class _CurrencyPickerState extends State<CurrencyPicker> {
   @override
   void initState() {
     print("rebuilding");
-    if (widget.currentCurrency != null) {
-      _currency = widget.currentCurrency;
+    if (widget.currentCurrencyAbbreviation != null) {
+      _currency = currencyFromAbbreviation(widget.currentCurrencyAbbreviation);
       print("setting state with currency: $_currency");
     }
     return super.initState();

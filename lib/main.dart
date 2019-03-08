@@ -4,6 +4,8 @@ import 'subscription_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'settings_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'exchange_rates_loader.dart';
+import 'exchange_rates_model.dart';
 
 void main() {
   SharedPreferences.setMockInitialValues({});
@@ -62,15 +64,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void queryValues() async {
-    documentsStream = Firestore.instance
-        .collection('subscriptions')
-        .snapshots();
+    documentsStream =
+        Firestore.instance.collection('subscriptions').snapshots();
     await documentsStream.listen((snapshot) {
-      double tempTotal = snapshot.documents.fold(0, (tot, doc) => tot + doc.data['amount']);
-      setState(() {total = tempTotal;});
-      debugPrint(total.toString());
+      getTotal(snapshot.documents).then((value) {
+        setState(() {
+          total = value;
+        });
+        debugPrint(total.toString());
+      });
     });
+
+//      double tempTotal = snapshot.documents.fold(0, (tot, doc) => tot + doc.data['amount']);
   }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -92,11 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(Icons.settings),
             onPressed: () {
-              Navigator.push(context,
+              Navigator.push(
+                  context,
                   MaterialPageRoute(
-                      builder: (context) => SettingsForm(),
-                  )
-              );
+                    builder: (context) => SettingsForm(),
+                  ));
             },
           ),
         ],
@@ -104,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: <Widget>[
           Flexible(
-            child:_buildBody(context),
+            child: _buildBody(context),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 28),
@@ -114,11 +121,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
   Widget _buildBody(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: documentsStream,
       builder: (context, snapshot) {
-        if(!snapshot.hasData) return LinearProgressIndicator();
+        if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.documents);
       },
     );
@@ -146,19 +154,15 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(subscription.name),
           trailing: Text(subscription.value.toString() + subscription.currency),
           onTap: () {
-            Navigator.push(context,
+            Navigator.push(
+                context,
                 MaterialPageRoute(
-                    builder: (context) => SubscriptionForm(subscription: subscription)
-                )
-            );
+                    builder: (context) =>
+                        SubscriptionForm(subscription: subscription)));
           },
         ),
       ),
     );
-  }
-
-  Future _showSettingsForm() async {
-
   }
 
   Future _showNewSubscriptionForm() async {

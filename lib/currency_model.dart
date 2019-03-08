@@ -9,7 +9,7 @@ class Currency {
 
 final List<Currency> currencies = [
   Currency('Zloty', 'PLN', 'PLN'),
-  Currency('Pound Sterling', 'GDP', '£'),
+  Currency('Pound Sterling', 'GBP', '£'),
   Currency('Dollar', 'USD', "\$")
 ];
 
