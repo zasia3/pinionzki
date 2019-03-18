@@ -11,5 +11,5 @@ class ExchangeRates {
         assert(json['rates'] != null),
         baseRate = json['base'],
         date = json['date'],
-        rates = json['rates'];
+        rates = json['rates'].cast<String, double>();
 }

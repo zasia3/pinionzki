@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'currency_model.dart';
 
 final String kAppCurrency = "appCurrency";
 final String kExchangeRatesCheckDate = "exchangeRatesCheckDate";
@@ -11,7 +12,7 @@ class SharedPreferencesHelper {
   static Future<String> getAppCurrency() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     print("getting prefs in getcurrency");
-    return prefs.getString(kAppCurrency) ?? 'PLN';
+    return prefs.getString(kAppCurrency) ?? currencies.first.abbreviation;
   }
 
   static Future<bool> setAppCurrency(String value) async {

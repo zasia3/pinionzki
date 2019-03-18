@@ -20,12 +20,14 @@ loadExchangeRates() async {
   final date = new DateTime.fromMicrosecondsSinceEpoch(lastCheckTimestamp);
   final today = DateTime.now();
 
-  final difference = today.difference(today);
+  final Duration difference = today.difference(today);
   print ('difference in days: $difference');
-//  if (difference.inDays < 1 && lastCheckedCurrencyAbbreviation == currencyAbbreviation) return;
+  print ('lastCheckedCurrencyAbbreviation: $lastCheckedCurrencyAbbreviation');
+  if (lastCheckTimestamp > 0 && /* difference.inDays < 1 && */lastCheckedCurrencyAbbreviation == currencyAbbreviation) return;
 
   final directory = await getApplicationDocumentsDirectory();
   final file = File('${directory.path}/$filename');
+  print ('file: $file');
   String json = await getLatestCurrencies(currencyAbbreviation);
   await file.writeAsString(json);
   print ('json: $json');
@@ -39,11 +41,13 @@ Future<ExchangeRates> getExchangeRates() async {
     final file = File('${directory.path}/$filename');
     String jsonString = await file.readAsString();
     print('jsonString: $jsonString');
-    ExchangeRates rates = ExchangeRates.fromJson(jsonDecode(jsonString));
+    final json = jsonDecode(jsonString);
+    print('json decoded: $json');
+    ExchangeRates rates = ExchangeRates.fromJson(json);
 
     return rates;
   } catch (e) {
-    print("Couldn't read file");
+    print("Couldn't read file: $e");
   }
 }
 
@@ -51,7 +55,7 @@ Future<double>getTotal(List<DocumentSnapshot> documents) async {
   await loadExchangeRates();
   ExchangeRates rates = await getExchangeRates();
 
-  print(rates);
+  print("rates: $rates");
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String currencyAbbreviation = prefs.getString(kAppCurrency) ?? currencies.first.abbreviation;
@@ -61,12 +65,17 @@ Future<double>getTotal(List<DocumentSnapshot> documents) async {
   documents.forEach( (document ) {
      double amount = document.data['amount'];
      String currency = document.data['currency'];
-//     if (currency == rates.baseRate) {
+
+     print('amount: $amount, currency: $currency');
+
+     if (currency == rates.baseRate) {
        total += amount;
-//     } else {
-//       double rate = rates.rates[currency];
-//       total += amount * rate;
-//     }
+     } else {
+       double rate = rates.rates[currency] ?? 1;
+       print('rate: $rate');
+       print('amount * rate = ${amount / rate}');
+       total += amount / rate;
+     }
   });
 
   return total;

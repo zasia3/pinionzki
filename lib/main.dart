@@ -6,6 +6,8 @@ import 'settings_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'exchange_rates_loader.dart';
 import 'exchange_rates_model.dart';
+import 'shared_preferences_handler.dart';
+import 'currency_model.dart';
 
 void main() {
   SharedPreferences.setMockInitialValues({});
@@ -113,10 +115,18 @@ class _MyHomePageState extends State<MyHomePage> {
           Flexible(
             child: _buildBody(context),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 28),
-            child: Text('Total: $total'),
-          ),
+          FutureBuilder<String>(
+              // get the languageCode, saved in the preferences
+              future: SharedPreferencesHelper.getAppCurrency(),
+              initialData: currencies.first.abbreviation,
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                return snapshot.hasData
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 28),
+                        child: Text('Total: ${total.toStringAsFixed(2)} ${snapshot.data}'),
+                      )
+                    : Container();
+              }),
         ],
       ),
     );

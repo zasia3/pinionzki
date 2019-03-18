@@ -5,6 +5,7 @@ import 'dart:convert';
 
 Future<String> getLatestCurrencies(String baseCurrency) async {
   String url = baseCurrency == null ? 'https://api.exchangeratesapi.io/latest' : 'https://api.exchangeratesapi.io/latest?base=$baseCurrency';
+  print ('url: $url');
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
