@@ -4,7 +4,8 @@ import 'subscription_model.dart';
 import 'currency_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'currency_model.dart';
-
+import 'frequency_picker.dart';
+import 'frequency_model.dart';
 
 class SubscriptionForm extends StatefulWidget {
   SubscriptionForm({Key key, this.subscription}) : super(key: key);
@@ -20,6 +21,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
   TextEditingController amountController = TextEditingController();
 
   Currency _currency;
+  Frequency _frequency;
   String _name;
   double _amount;
 
@@ -85,6 +87,14 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
                     },
                 currentCurrencyAbbreviation: _currency.abbreviation,
               ),
+              FrequencyPicker(
+                notifyParent: (Frequency frequency) => {
+    setState(() {
+    _frequency = frequency;
+    })
+                },
+              ),
+
               new Container(
                 padding: const EdgeInsets.only(left: 40.0, top: 20.0),
                 child: new RaisedButton(
